@@ -115,7 +115,10 @@ function WorkerPage() {
       .insert({ worker_id: user.id, name, issuer, year: year ? Number(year) : null })
       .select("*")
       .maybeSingle();
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     if (data) setCerts((c) => [...c, data as Cert]);
   }
 
@@ -132,7 +135,10 @@ function WorkerPage() {
       })
       .select("*")
       .maybeSingle();
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     if (data) setWork((w) => [...w, data as Work]);
   }
 
@@ -149,7 +155,10 @@ function WorkerPage() {
         reference_verified: hasRefs,
       })
       .eq("user_id", user.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     if (hasCert) await supabase.from("certifications").update({ verified: true }).eq("worker_id", user.id);
     setWp({ ...wp, id_verified: true, skill_verified: hasSkills, reference_verified: hasRefs });
     setCerts((c) => c.map((x) => ({ ...x, verified: hasCert ? true : x.verified })));
