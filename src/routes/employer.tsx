@@ -93,15 +93,32 @@ function EmployerPage() {
           .select("*")
           .eq("company_id", c.id)
           .order("created_at", { ascending: false });
-        setJobs((j ?? []) as Job[]);
-        if (j?.length) setActiveJob(j[0].id);
+        const list = (j ?? []) as Job[];
+        setJobs(list);
+        if (list[0]) setActiveJob(list[0].id);
       }
       const { data: w } = await supabase
         .from("worker_profiles")
-        .select("*, profiles(full_name, city)")
+        .select("*")
         .eq("available", true)
         .limit(50);
-      setCandidates((w ?? []) as Candidate[]);
+      const rows = w ?? [];
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, full_name, city")
+        .in("id", rows.length ? rows.map((r) => r.user_id) : ["00000000-0000-0000-0000-000000000000"]);
+      const byId = new Map((profs ?? []).map((p) => [p.id, p]));
+      setCandidates(
+        rows.map((r) => ({
+          ...r,
+          profiles: byId.get(r.user_id)
+            ? {
+                full_name: byId.get(r.user_id)!.full_name,
+                city: byId.get(r.user_id)!.city,
+              }
+            : null,
+        })) as Candidate[],
+      );
     })();
   }, [user]);
 
@@ -165,8 +182,7 @@ function EmployerPage() {
       job_id: activeJob,
       worker_id: workerId,
       match_score: score,
-      source: "employer_invite",
-      pipeline_stage: "shortlisted",
+      stage: "shortlisted",
     });
     if (error) {
       toast.error(error.message);
@@ -196,7 +212,7 @@ function EmployerPage() {
       .sort((a, b) => b.score - a.score);
   }, [candidates, job]);
 
-  if (!user) return <Page />;
+  if (!user) return <Page>{null}</Page>;
 
   if (!company) {
     return (
