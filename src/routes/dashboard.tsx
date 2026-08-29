@@ -45,7 +45,7 @@ function DashboardPage() {
   const { profile } = useProfile(user);
   const navigate = useNavigate();
   const [apps, setApps] = useState<App[]>([]);
-  const isEmployer = profile?.role === "employer";
+  const isEmployer = profile?.account_type === "employer";
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -59,7 +59,7 @@ function DashboardPage() {
         .select("*, jobs(title, trade, city, wage, wage_period)")
         .order("created_at", { ascending: false });
 
-      if (profile.role === "employer") {
+      if (profile.account_type === "employer") {
         const { data: c } = await supabase
           .from("companies")
           .select("id")
@@ -82,7 +82,7 @@ function DashboardPage() {
 
       const { data } = await query;
       const rows = (data ?? []) as App[];
-      if (profile.role === "employer" && rows.length) {
+      if (profile.account_type === "employer" && rows.length) {
         const { data: profs } = await supabase
           .from("profiles")
           .select("id, full_name")
