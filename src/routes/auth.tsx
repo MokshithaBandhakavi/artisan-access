@@ -37,7 +37,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [city, setCity] = useState("");
-  const [trade, setTrade] = useState(TRADES[0]);
+  const [trade, setTrade] = useState<string>(TRADES[0] ?? "Electrician");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
