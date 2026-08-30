@@ -15,6 +15,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EmployerRouteImport } from './routes/employer'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as WorkerRouteImport } from './routes/worker'
+import { Route as WorkersRouteImport } from './routes/workers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const WorkerRoute = WorkerRouteImport.update({
   path: '/worker',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkersRoute = WorkersRouteImport.update({
+  id: '/workers',
+  path: '/workers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/employer': typeof EmployerRoute
   '/jobs': typeof JobsRoute
   '/worker': typeof WorkerRoute
+  '/workers': typeof WorkersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/employer': typeof EmployerRoute
   '/jobs': typeof JobsRoute
   '/worker': typeof WorkerRoute
+  '/workers': typeof WorkersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +79,27 @@ export interface FileRoutesById {
   '/employer': typeof EmployerRoute
   '/jobs': typeof JobsRoute
   '/worker': typeof WorkerRoute
+  '/workers': typeof WorkersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/employer' | '/jobs' | '/worker'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/employer'
+    | '/jobs'
+    | '/worker'
+    | '/workers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/employer' | '/jobs' | '/worker'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/employer'
+    | '/jobs'
+    | '/worker'
+    | '/workers'
   id:
     | '__root__'
     | '/'
@@ -85,6 +108,7 @@ export interface FileRouteTypes {
     | '/employer'
     | '/jobs'
     | '/worker'
+    | '/workers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,6 +118,7 @@ export interface RootRouteChildren {
   EmployerRoute: typeof EmployerRoute
   JobsRoute: typeof JobsRoute
   WorkerRoute: typeof WorkerRoute
+  WorkersRoute: typeof WorkersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -140,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workers': {
+      id: '/workers'
+      path: '/workers'
+      fullPath: '/workers'
+      preLoaderRoute: typeof WorkersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -150,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmployerRoute: EmployerRoute,
   JobsRoute: JobsRoute,
   WorkerRoute: WorkerRoute,
+  WorkersRoute: WorkersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
